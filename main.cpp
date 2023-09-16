@@ -1,48 +1,31 @@
+/*
+    game
+    player
+    map
+    camera
+    raycaster
+    renderer
 
-#include "Player.h"
+    static constexpr size_t MAP_SQUARE_SIZE = 32;
+*/
+
+#include "game.h"
 
 
 
 int main () {
     
-    const int screenWidth = 1366;
-    const int screenHeight = 768;
-    
-    Player player;
-    Map map;
+    Game game;
 
-    InitWindow(screenWidth, screenHeight, "Raycasting");
-    SetTargetFPS(60);
+    game.run();
+
+
 
 
     
 
     
 
-    while (WindowShouldClose() == false){
-
-        player.move(map);
-        player.rotate();
-
-        if(IsKeyDown(KEY_SPACE)){
-            player.placeBlock(map);
-        }  
-
-              
-        
-        BeginDrawing();
-
-        ClearBackground(BLACK);
-        
-
-        player.drawScreen(map);
-
-        //map.drawMap();
-        //player.drawPlayer();
-
-        EndDrawing();
-    }
-
-    CloseWindow();
+    
     return 0;
 }
