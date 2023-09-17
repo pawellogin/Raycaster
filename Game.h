@@ -1,29 +1,36 @@
-#include <raylib.h>
-#include <cstddef>
-
-
+#include "Renderer.h"
 
 class Game{
 
-static constexpr size_t SCREEN_WIDTH = 1366;
-static constexpr size_t SCREEN_HEIGHT = 768;
+Player player;
+Map map;
+Renderer renderer;
 
 public:
 
-Game(){
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raycasting");
+
+
+
+Game() : player(),map(),renderer(map,player) {
+    InitWindow(Renderer::SCREEN_WIDTH,Renderer::SCREEN_HEIGHT, "Raycasting");
     SetTargetFPS(60);
+    
 }
 
 void run(){
 
     while (WindowShouldClose() == false){
 
-              
-        
+
+        player.move(map);
+        player.rotate();
+
         BeginDrawing();
 
         ClearBackground(BLACK);
+
+        renderer.printMiniMap(0,0);
+
 
 
         EndDrawing();
@@ -31,8 +38,5 @@ void run(){
 
     CloseWindow();
 }
-
-
-
 
 };
