@@ -30,6 +30,10 @@ class Player{
         return direction;
     }
 
+    float getAngle() const{
+        return angle;
+    }
+
 
 
     void rotate(){
