@@ -8,6 +8,7 @@ Raycaster raycaster;
 Renderer renderer;
 
 
+
 public:
 
 Game() : player(),map(),raycaster(map,player),renderer(map,player,raycaster) {
@@ -27,12 +28,12 @@ void run(){
 
         ClearBackground(BLACK);
 
-
         renderer.printCeling();
-        renderer.printFloor();    
+        renderer.printFloor();  
+        renderer.printShadowWalls();  
+        //renderer.printWalls();
 
         renderer.printMiniMap(0,0);
-        renderer.printWalls();
 
         EndDrawing();
     }

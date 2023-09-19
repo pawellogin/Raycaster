@@ -6,11 +6,50 @@
 #include "Raycaster.h"
 
 
+
+class Shadow{
+
+Color gray;
+
+
+public:
+
+    Shadow(){
+        gray = GRAY;
+
+    }
+
+    //shadow power 0.0 - 1.0
+
+    Color makeShadow(Color color,float shadowPower) const{
+        
+        if(shadowPower > 1) color = {0,0,0,255};
+
+
+        float shadow = color.r * shadowPower;
+        color.r -= shadow;
+
+        shadow = color.g * shadowPower;
+        color.g -= shadow;
+
+        shadow = color.b * shadowPower;
+        color.b -= shadow;
+
+        
+        
+        return color;
+
+    }
+};
+
+
+
 class Renderer{
 
     const Map& map;
     const Player& player;
     const Raycaster& raycaster;
+    Shadow shadow;
 
 
     public:
@@ -62,16 +101,18 @@ class Renderer{
     }
 
     void printFloor(){
-        DrawRectangleV({0,SCREEN_HEIGHT/2},{SCREEN_WIDTH,SCREEN_HEIGHT / 2},DARKGREEN);
+        Color VERYDARKGREEN = {0,60,22,255};
+
+        DrawRectangleV({0,SCREEN_HEIGHT/2},{SCREEN_WIDTH,SCREEN_HEIGHT / 2},VERYDARKGREEN);
     }
 
     void printCeling(){
-        DrawRectangleV({0,0},{SCREEN_WIDTH,SCREEN_HEIGHT / 2},DARKBLUE);
+        DrawRectangleV({0,0},{SCREEN_WIDTH,SCREEN_HEIGHT / 2},BLACK);
     }
 
     void printWalls(){
 
-        float POV = 90.0f;
+        float POV = 60.0f;
 
         float rayAngle = player.getAngle() - (POV/2)*DEG2RAD;
 
@@ -84,13 +125,13 @@ class Renderer{
         int wall = 0;
         float lineHeight = 0;
 
-
         
         for(size_t i = 0; i < SCREEN_WIDTH;i++){
 
             raycaster.castRay(rayDirection,rayLenght,side,wall);
 
-            lineHeight = (GetScreenHeight() / rayLenght)*wallSize;
+            lineHeight = ((GetScreenHeight() / rayLenght)*wallSize)  ;
+            
 
             drawPosition.x = i;
             drawPosition.y = (SCREEN_HEIGHT - lineHeight)/2;
@@ -106,6 +147,59 @@ class Renderer{
                 break;
 
             }
+
+            
+            
+
+            rayAngle += POV / SCREEN_WIDTH * DEG2RAD;
+            rayDirection.x = cos(rayAngle);
+            rayDirection.y = sin(rayAngle); 
+        }
+    }
+
+    void printShadowWalls(){
+
+        float POV = 60.0f;
+
+        float rayAngle = player.getAngle() - (POV/2)*DEG2RAD;
+
+        Vector2 rayDirection = {cos(rayAngle),sin(rayAngle)};
+
+        Vector2 drawPosition = {0.0f,0.0f};
+
+        float rayLenght = 0.0f;
+        int side = 0; // 0 vertical, 1 horizontal
+        int wall = 0;
+        float lineHeight = 0;
+        float shadowPower = 0;
+
+        for(size_t i = 0; i < SCREEN_WIDTH;i++){
+
+            raycaster.castRay(rayDirection,rayLenght,side,wall);
+
+
+
+            lineHeight = ((GetScreenHeight() / rayLenght)*wallSize)  ;
+            
+
+            drawPosition.x = i;
+            drawPosition.y = (SCREEN_HEIGHT - lineHeight)/2;
+
+            shadowPower = rayLenght / 700;
+
+            switch(wall){
+                case 1:
+                    if(side == 0)DrawRectangleV(drawPosition,{1,lineHeight},shadow.makeShadow(GRAY,shadowPower));
+                    else if(side == 1)DrawRectangleV(drawPosition,{1,lineHeight},shadow.makeShadow(DARKGRAY,shadowPower));
+                break;
+
+                case 2:
+
+                break;
+
+            }
+
+            
 
             rayAngle += POV / SCREEN_WIDTH * DEG2RAD;
             rayDirection.x = cos(rayAngle);
